@@ -102,7 +102,13 @@ struct HomeView: View {
                         }
                     }
                     .padding(.horizontal, 20)
-                    .padding(.bottom, 16)
+                    .padding(.bottom, 8)
+
+                    Text(quickValueCopy)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(Color(hex: "#636366"))
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 16)
 
                     // MARK: Footer
                     HStack(spacing: 24) {
@@ -128,6 +134,19 @@ struct HomeView: View {
                     .padding(.bottom, 36)
                 }
             }
+        }
+    }
+}
+
+private extension HomeView {
+    var quickValueCopy: String {
+        switch appState.language {
+        case "tr":
+            return "Karanlıkta tek dokunuşla daha net görün."
+        case "de":
+            return "Bei wenig Licht mit einem Tippen klarer aussehen."
+        default:
+            return "Look clearer in low light with one tap."
         }
     }
 }

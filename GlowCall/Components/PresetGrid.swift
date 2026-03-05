@@ -64,7 +64,7 @@ struct PresetCard: View {
                 if preset.isFree && !isSelected {
                     VStack {
                         HStack {
-                            Text("FREE")
+                            Text(appState.s.freeBadge)
                                 .font(.system(size: 8, weight: .bold))
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 6)

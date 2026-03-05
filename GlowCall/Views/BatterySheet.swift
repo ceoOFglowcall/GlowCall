@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct BatterySheet: View {
     @Environment(AppState.self) private var appState
@@ -48,6 +49,9 @@ struct BatterySheet: View {
                     // Dim button
                     Button {
                         appState.brightness = 50
+                        UIApplication.shared.connectedScenes
+                            .compactMap { $0 as? UIWindowScene }
+                            .first?.windows.first?.screen.brightness = 0.5
                         appState.showBatterySheet = false
                     } label: {
                         Text(s.battDim)

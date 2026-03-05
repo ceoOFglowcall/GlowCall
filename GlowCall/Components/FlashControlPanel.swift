@@ -111,7 +111,7 @@ struct FlashControlPanel: View {
                         )
                         .simultaneousGesture(
                             DragGesture(minimumDistance: 0)
-                                .onChanged { _ in
+                                .onEnded { _ in
                                     if !appState.isPro {
                                         appState.showPremiumSheet = true
                                     }
@@ -144,12 +144,13 @@ struct FlashControlPanel: View {
                             .stroke(Color.white.opacity(0.4), lineWidth: 1.5)
                     )
             }
-            Text(appState.eyeMode ? "" : (appState.language == "tr" ? "Soğuk Beyaz için Göz Koruma Modu önerilir" : "Eye Protection Mode recommended for Cool White"))
-                .font(.system(size: 11))
-                .foregroundColor(.black.opacity(0.45))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .frame(height: 16)
-                .padding(.top, 4)
+            if !appState.eyeMode {
+                Text(eyeModeHint)
+                    .font(.system(size: 11))
+                    .foregroundColor(.black.opacity(0.45))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 4)
+            }
 
             // MARK: Close Button
             Button(action: onClose) {
@@ -172,6 +173,17 @@ struct FlashControlPanel: View {
                 endPoint: .bottom
             )
         )
+    }
+
+    private var eyeModeHint: String {
+        switch appState.language {
+        case "tr":
+            return "Soğuk beyazda Göz Koruma Modu önerilir."
+        case "de":
+            return "Augenschutz wird bei kühlem Weiß empfohlen."
+        default:
+            return "Eye Protection is recommended for cool white."
+        }
     }
 }
 

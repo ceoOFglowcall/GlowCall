@@ -10,23 +10,33 @@ struct ColorPreset {
     let isFree: Bool
     let nameTR: String
     let nameEN: String
+    let nameDE: String
 
     func name(lang: String) -> String {
-        lang == "tr" ? nameTR : nameEN
+        switch lang {
+        case "tr":
+            return nameTR
+        case "de":
+            return nameDE
+        default:
+            return nameEN
+        }
     }
 }
 
 // MARK: - Presets
 let PRESETS: [ColorPreset] = [
-    ColorPreset(id: "cool",   color: Color(hex: "#eef4ff"), warmth: 5,  isFree: true,  nameTR: "Soğuk Beyaz", nameEN: "Cool White"),
-    ColorPreset(id: "neu",    color: Color(hex: "#fff9ee"), warmth: 35, isFree: false, nameTR: "Nötr Beyaz",  nameEN: "Neutral White"),
-    ColorPreset(id: "warm",   color: Color(hex: "#ffe580"), warmth: 70, isFree: false, nameTR: "Sıcak Sarı",  nameEN: "Warm Yellow"),
-    ColorPreset(id: "golden", color: Color(hex: "#ffc85a"), warmth: 92, isFree: false, nameTR: "Altın",       nameEN: "Golden"),
+    ColorPreset(id: "cool",   color: Color(hex: "#eef4ff"), warmth: 5,  isFree: true,  nameTR: "Soğuk Beyaz", nameEN: "Cool White",    nameDE: "Kaltweiß"),
+    ColorPreset(id: "neu",    color: Color(hex: "#fff9ee"), warmth: 35, isFree: false, nameTR: "Nötr Beyaz",  nameEN: "Neutral White", nameDE: "Neutralweiß"),
+    ColorPreset(id: "warm",   color: Color(hex: "#ffe580"), warmth: 70, isFree: false, nameTR: "Sıcak Sarı",  nameEN: "Warm Yellow",   nameDE: "Warmgelb"),
+    ColorPreset(id: "golden", color: Color(hex: "#ffc85a"), warmth: 92, isFree: false, nameTR: "Altın",       nameEN: "Golden",        nameDE: "Gold"),
 ]
 
 // MARK: - AppState
 @Observable
 class AppState {
+    private static let defaultBrightness: Double = 80
+
 
     // MARK: Kalıcı (UserDefaults)
     var hasSeenOnboarding: Bool {
@@ -38,12 +48,8 @@ class AppState {
     var selectedPresetIndex: Int {
         didSet { UserDefaults.standard.set(selectedPresetIndex, forKey: "gc_preset") }
     }
-    var brightness: Double {
-        didSet { UserDefaults.standard.set(brightness, forKey: "gc_brightness") }
-    }
-    var eyeMode: Bool {
-        didSet { UserDefaults.standard.set(eyeMode, forKey: "gc_eye") }
-    }
+    var brightness: Double
+    var eyeMode: Bool
 
     // MARK: Oturum bazlı
     var warmth: Double = 5
@@ -67,17 +73,21 @@ class AppState {
         let systemLang = Locale.current.language.languageCode?.identifier ?? "en"
         let defaultLang = ["tr", "de"].contains(systemLang) ? systemLang : "en"
         self.language = UserDefaults.standard.string(forKey: "gc_lang") ?? defaultLang
-        self.selectedPresetIndex = UserDefaults.standard.object(forKey: "gc_preset") as? Int ?? 0
-        self.brightness = 80
+        let storedPresetIndex = UserDefaults.standard.object(forKey: "gc_preset") as? Int ?? 0
+        self.selectedPresetIndex = Self.safePresetIndex(storedPresetIndex)
+
+        self.brightness = Self.defaultBrightness
         self.eyeMode = false
-        self.warmth            = Double(PRESETS[selectedPresetIndex].warmth)
+
+        self.warmth = Double(PRESETS[selectedPresetIndex].warmth)
     }
 
     // MARK: Helpers
-    var selectedPreset: ColorPreset { PRESETS[selectedPresetIndex] }
+    var selectedPreset: ColorPreset { PRESETS[Self.safePresetIndex(selectedPresetIndex)] }
     var s: GCStrings { GCStrings.strings(lang: language) }
 
     func selectPreset(_ index: Int) {
+        guard PRESETS.indices.contains(index) else { return }
         guard PRESETS[index].isFree || isPro else {
             showPremiumSheet = true
             return
@@ -122,13 +132,18 @@ class AppState {
 
     // MARK: Warmth label
     func warmthLabel() -> String {
-        if selectedPresetIndex == 0 { return "—" }
+        if Self.safePresetIndex(selectedPresetIndex) == 0 { return "—" }
         switch warmth {
         case ..<25:  return s.warmCool
         case ..<55:  return s.warmNeu
         case ..<80:  return s.warmWarm
         default:     return s.warmGolden
         }
+    }
+
+    private static func safePresetIndex(_ index: Int) -> Int {
+        guard PRESETS.indices.contains(index) else { return 0 }
+        return index
     }
 }
 

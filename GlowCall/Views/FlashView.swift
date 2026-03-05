@@ -90,7 +90,7 @@ struct FlashView: View {
             .compactMap { $0 as? UIWindowScene }
             .first?.windows.first?.screen
         previousBrightness = screen?.brightness ?? 0.5
-        screen?.brightness = 1.0
+        screen?.brightness = appState.brightness / 100.0
         UIApplication.shared.isIdleTimerDisabled = true
 
         withAnimation { showHint = true }
@@ -131,6 +131,7 @@ struct FlashView: View {
     func handleTap() {
         let now = Date()
         if now.timeIntervalSince(lastTapTime) < 0.32 {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             closeFlash()
             lastTapTime = .distantPast
         } else {
