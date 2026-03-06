@@ -9,8 +9,8 @@ struct PremiumSheet: View {
 
     private let monthlyProductID = "glowcall.pro.monthly"
     private let yearlyProductID = "glowcall.pro.yearly"
-    private let termsURL = URL(string: "https://github.com/ceoOFglowcall/Felek/blob/main/TERMS_OF_USE.md")
-    private let privacyURL = URL(string: "https://github.com/ceoOFglowcall/Felek/blob/main/PRIVACY_POLICY.md")
+    private let termsURL = URL(string: "https://github.com/ceoOFglowcall/GlowCall/blob/glowcall-update-1/TERMS_OF_USE.md")
+    private let privacyURL = URL(string: "https://github.com/ceoOFglowcall/GlowCall/blob/glowcall-update-1/PRIVACY_POLICY.md")
 
     @Environment(AppState.self) private var appState
     @Environment(\.openURL) private var openURL
