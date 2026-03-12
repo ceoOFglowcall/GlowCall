@@ -25,4 +25,4 @@ GlowCall is provided "as is" without warranties of any kind. Feature availabilit
 
 ## 5. Contact
 
-For support requests, contact: support@glowcall.app
+For support requests, contact: selin.gocuk@icloud.com

@@ -28,4 +28,4 @@ You can remove app data by deleting the app from your device.
 
 ## 6. Contact
 
-For privacy questions, contact: privacy@glowcall.app
+For privacy questions, contact: selin.gocuk@icloud.com
